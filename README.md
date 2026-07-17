@@ -69,23 +69,19 @@ While Direct BLE (Option 3) is the most elegant solution, we have a very tight d
 **The BLE Pairing Challenge:**
 If we use a BLE connection (Options 2 or 3), we must carefully design the pairing process—both the technical implementation and the user experience (UX). Since there will be 6+ robot/computer pairs operating in the same classroom in close proximity, we need a robust way to ensure each student's netbook connects to their own robot and not someone else's.
 
-## Microbit firmware choice 
+## Micro:bit Firmware Choice
 
-If I'm not completely wrong, the the TPBot comes with various firmwares through
-which the Microbit can drive it. 
+The TPBot itself is simply a chassis with a motor controller; the actual "firmware" runs on the Micro:bit plugged into it. We have two main paths for what to flash onto that Micro:bit:
 
-TPBot microbit firmware options:
+1. **Use an Existing/Stock Firmware**:
+   - The Micro:bit runs a pre-existing environment (like standard MicroPython or a stock MakeCode setup).
+   - **Requirement**: This only works if the firmware can receive motor commands over USB serial. We would need to build a library on the Compy Netbook side to translate our Lua commands into that specific protocol.
+   
+2. **Develop a Custom Firmware**:
+   - We write and flash our own custom C++ or MicroPython firmware to the Micro:bit.
+   - **Advantage**: We have complete control over the wire protocol. We can design a very simple, minimal protocol tailored exactly to the few functions we need (like `robot_move`), which keeps the Compy integration much easier.
 
-- TPBot microbit firmware is one of the unmodified ones
-  - this can only work if it can be driven at least with USB
-  - and in this case we need to make sure that from the compy we can speak
-    that protocol, possibly by linking into the Compy IDE some library that
-    talks this protocol
-- TPBot microbit firmware is modified by us
-  - in this case, we can design a wire protocol that implements the minimal
-    functions that we need
-
-At the moment I do not know enough to make a call between these.
+There is no final decision here yet, feel free to experiment and recommend!
 
 ## Games
 
