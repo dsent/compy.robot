@@ -51,19 +51,23 @@ be able to do so via calling some built-in functions from a compy-program.
 
 ## Physical setup
 
-The setup can be:
+There are three potential ways to connect the Compy Netbook to the TPBot:
 
-- Compy Netbook <---usb cable---> Microbit ---plugged into---> TPBot
-- Compy Netbook <---usb cable---> Microbit    <--BLE-->   Microbit---plugged into--> TPBot
-- Compy Netwook <--BLE--> Microbit---> plugged into--> TPBot
+1. **Direct USB**:
+   `Compy Netbook <---USB Cable---> Micro:bit (Plugged into TPBot)`
+   - The simplest and most reliable method, but restricts the robot's movement due to the cable.
+2. **USB Bridge to BLE**:
+   `Compy Netbook <---USB Cable---> Micro:bit <--Bluetooth (BLE)--> Micro:bit (Plugged into TPBot)`
+   - Uses an intermediate Micro:bit connected to the computer to wirelessly control the robot. 
+3. **Direct BLE**:
+   `Compy Netbook <--Bluetooth (BLE)--> Micro:bit (Plugged into TPBot)`
+   - The ideal, fully wireless setup.
 
-Obviously the last is the nicest, but given that we have just a few days to
-implement, we'll spend only a limited amount of time experimenting with that.
+**Implementation Strategy:**
+While Direct BLE (Option 3) is the most elegant solution, we have a very tight deadline (a few days). Therefore, we will only spend a limited amount of time experimenting with it before falling back to simpler methods if needed.
 
-In case of BLE connection anywhere, we need to research how pairing should
-work (even the UX, not just the implementation),
-knowing that there's 6+ device pairs in the same classroom not too far from
-each other.
+**The BLE Pairing Challenge:**
+If we use a BLE connection (Options 2 or 3), we must carefully design the pairing process—both the technical implementation and the user experience (UX). Since there will be 6+ robot/computer pairs operating in the same classroom in close proximity, we need a robust way to ensure each student's netbook connects to their own robot and not someone else's.
 
 ## Microbit firmware choice 
 
