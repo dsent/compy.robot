@@ -87,14 +87,14 @@ At the moment I do not know enough to make a call between these.
 
 Given that the information is that only rudimentary control is possible with
 the basic robot control APIs, we should give up the plan to implement the Maze
-with the robot as part of this course. A different idea that I propose we go with:
-someone playing the adversary puts down in front of a robot a few obstacles. The
-goal of the player is to pre-program control commands of the robot so that the
-robot evades the obstacles, passing them on the side determined by the adversary
-who built the obstacles.
+with the robot as part of this course. A different idea that I propose we go with
+is an **Obstacle Course Challenge**:
 
-This game can tolerate imprecision of the robot control, it becomes a game of
-estimation how long and how fast to rotate which wheel.
+1. **The Setup**: An "Adversary" (e.g. a teacher or another student) places a few obstacles in front of the robot to create a course.
+2. **The Rules**: The Adversary specifies exactly how the robot must navigate the course (for example: "pass the first obstacle on the left, then the second on the right").
+3. **The Challenge**: The "Player" must write a sequence of programmed commands to navigate the robot past the obstacles according to the Adversary's rules. Real-time remote control is not allowed; the entire path must be pre-programmed!
+
+Because the robot's movement may be slightly imprecise, the player will need to experiment and estimate how long and how fast to rotate each wheel to achieve the perfect run. This turns the hardware limitations into a fun game of trial and error.
 
 ## Build-in Lua API
 
