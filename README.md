@@ -64,7 +64,17 @@ There are three potential ways to connect the Compy Netbook to the TPBot:
    - The ideal, fully wireless setup.
 
 **Implementation Strategy:**
-While Direct BLE (Option 3) is the most elegant solution, we have a very tight deadline (a few days). Therefore, we will only spend a limited amount of time experimenting with it before falling back to simpler methods if needed.
+Decision: we start with Direct USB (Option 1) to have a working solution as
+soon as possible, and look into better options later. The wire protocol is
+designed to be transport-agnostic: from the Compy side, Options 1 and 2 are
+indistinguishable (both present a serial port), so the BLE bridge (Option 2)
+can be added later without changing anything on the Compy side. Direct BLE
+(Option 3) remains the long-term ideal but is out of scope for this deadline.
+
+For the Obstacle Course game a cable is tolerable: the course is short, and
+while the cable slightly affects the trajectory, in a game about estimating
+and tuning parameters that is just one more source of error, which is part
+of the fun anyway.
 
 **The BLE Pairing Challenge:**
 If we use a BLE connection (Options 2 or 3), we must carefully design the pairing process—both the technical implementation and the user experience (UX). Since there will be 6+ robot/computer pairs operating in the same classroom in close proximity, we need a robust way to ensure each student's netbook connects to their own robot and not someone else's.
@@ -81,7 +91,21 @@ The TPBot itself is simply a chassis with a motor controller; the actual "firmwa
    - We write and flash our own custom C++ or MicroPython firmware to the Micro:bit.
    - **Advantage**: We have complete control over the wire protocol. We can design a very simple, minimal protocol tailored exactly to the few functions we need (like `robot_move`), which keeps the Compy integration much easier.
 
-There is no final decision here yet, feel free to experiment and recommend!
+**Decision**: we go with a custom MicroPython script (Option 2). It is faster
+to develop than custom C++ (no toolchain needed) and simpler than
+reverse-engineering the protocol of a stock firmware. The micro:bit becomes a
+dumb executor: a small loop reads a command line from UART (e.g. `M 20 80 3400`),
+drives the motors over I2C, and replies `OK`. A text-based line protocol can
+also be debugged by hand from any serial terminal, which is valuable during a
+lesson.
+
+**Constraint**: Python stays strictly inside the micro:bit firmware. No Python
+of any kind on the Compy side — the Compy side is Lua only, talking to the
+robot over the serial protocol.
+
+The Lua REPL of the original firmware design is not needed at this stage:
+Lua already runs on the netbook, so the firmware only needs to execute motor
+commands.
 
 ## Games
 
@@ -105,3 +129,14 @@ robot_move(20, 80, 3.4)
 
 meaning: rotate the left wheel with 20% of whatever is controllable of the TPBot
 (speed? energy?), the right wheel with 80%, for 3.4 seconds.
+
+Two semantic details, decided upfront:
+
+1. **The call is blocking.** `robot_move` returns only after the movement has
+   completed. This way a student's program reads top to bottom as a plain
+   sequence of actions — no command queues, no callbacks, nothing to explain
+   beyond "the robot does one line at a time".
+2. **Negative speeds are allowed.** A negative value spins that wheel
+   backwards, so e.g. `robot_move(-50, 50, 1)` turns the robot in place.
+   This is cheaper than a separate turn function and extends the game
+   naturally (reversing out of a dead end, pivoting between obstacles).
