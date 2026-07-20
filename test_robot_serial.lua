@@ -3,7 +3,7 @@
 --- the harness kills the firmware when /tmp/kill_now
 --- appears, which lets us test mid-session device death.
 
-dofile("robot_serial.lua")
+require("robot_serial")
 
 local failures = 0
 

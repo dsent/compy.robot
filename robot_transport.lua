@@ -6,8 +6,8 @@
 --- Linux; the android backend is blind-coded pending a
 --- device test.
 
-dofile("robot_serial.lua")
-dofile("robot_usb_android.lua")
+require("robot_serial")
+require("robot_usb_android")
 
 local function posixOpen(dev)
   dev = dev or serialFindDevice()

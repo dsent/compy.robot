@@ -10,10 +10,12 @@
 --- into a deadline loop, so blocking-with-timeout reads
 --- need no OS-specific machinery.
 ---
---- Target is the Compy netbook (Linux); `stty -F` is the
+--- Backend role: development machines, CI, and any future
+--- Linux-based Compy hardware. The classroom target is
+--- Android (see robot_usb_android.lua). `stty -F` is the
 --- Linux spelling of the flag.
 
-dofile("robot_line_reader.lua")
+require("robot_line_reader")
 
 SERIAL_BAUD = 115200
 SERIAL_GLOB = "/dev/ttyACM*"

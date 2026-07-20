@@ -19,8 +19,8 @@
 --- moves robot work to a love.thread, the whole transport
 --- must live inside that thread, opened there.
 
-dofile("robot_jni.lua")
-dofile("robot_line_reader.lua")
+require("robot_jni")
+require("robot_line_reader")
 
 USB_VENDOR_MICROBIT = 0x0D28
 USB_CLASS_CDC_COMM = 2
