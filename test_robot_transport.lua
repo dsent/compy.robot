@@ -4,7 +4,7 @@
 --- 2) android backend selection via a stubbed love.system;
 --- 3) android open fails STAGED (not crashes) off-device.
 
-dofile("robot_transport.lua")
+require("robot_transport")
 
 local failures = 0
 local function check(name, got, want)
