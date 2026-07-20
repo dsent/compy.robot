@@ -1,7 +1,7 @@
 --- Unit tests for the shared line reader with scripted
 --- slices. This is what makes the android command path
 --- sandbox-testable: same code, stubbed readSlice.
-dofile("robot_line_reader.lua")
+require("robot_line_reader")
 
 local failures = 0
 local function check(name, got, want)
@@ -45,6 +45,13 @@ check("dead device propagates", e2, "io error")
 st, sl = scripted({ "", "ER", "", "R parse\n" })
 check("quiet gaps inside a line ok",
   lineReaderRead(st, sl, 0.8), "ERR parse")
+
+local hooks = 0
+LINE_READER_IDLE = function() hooks = hooks + 1 end
+st, sl = scripted({ "", "", "OK\n" })
+lineReaderRead(st, sl, 2)
+check("idle hook per quiet slice", hooks, 2)
+LINE_READER_IDLE = nil
 
 print(failures == 0 and "ALL PASS" or
   failures .. " FAILURES")

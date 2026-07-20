@@ -27,10 +27,19 @@ end
 --- Read one response line. The timeout counts only quiet
 --- slices, so an actively arriving response never times
 --- out mid-line regardless of its length.
+--- Optional hook called once per quiet slice during a
+--- blocking read. Integration can point it at an event
+--- pump so long robot moves keep the UI responsive
+--- (Android ANR mitigation). nil = no hook.
+LINE_READER_IDLE = nil
+
 --- Account for one slice: an empty slice counts against
 --- the quiet deadline, data does not.
 local function absorbSlice(state, chunk)
-  if chunk == "" then return 1 end
+  if chunk == "" then
+    if LINE_READER_IDLE then LINE_READER_IDLE() end
+    return 1
+  end
   state.pending = state.pending .. chunk
   return 0
 end
