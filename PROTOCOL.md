@@ -51,8 +51,12 @@ Note the unit difference: the protocol carries integer milliseconds
 converts on the Compy side.
 
 While a movement is in progress the firmware does not read the
-serial port; commands sent during a movement are buffered by the OS
-and processed after the current movement completes.
+serial port. Incoming bytes accumulate in the micro:bit's 64-byte
+UART RX buffer (plus host-side OS buffers) and are processed after
+the movement completes. A host that follows strict request-response
+discipline — never sending the next command before reading the
+previous response — can never overflow that buffer; hand-testers
+typing during a long movement theoretically can.
 
 ### `PING` — connection check
 
@@ -70,6 +74,8 @@ Every command produces exactly one response line:
   - `ERR parse` — malformed or unknown command, wrong number of
     arguments, non-integer argument, or oversized line.
   - `ERR range` — integers parsed but out of the allowed ranges.
+  - `ERR i2c` — the motor controller did not acknowledge: the TPBot
+    chassis is switched off or the micro:bit is not seated in it.
 
 Hosts should treat any `ERR` uniformly (report and continue); the
 reason string is for humans debugging, not for program logic.
