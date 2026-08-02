@@ -5,6 +5,7 @@ and the line-assembly loop. I2C writes are recorded, sleep is
 instant. This verifies everything except the real I2C bus and
 real UART timing, which need the device.
 """
+import os
 import sys
 import types
 
@@ -24,7 +25,8 @@ micropython.kbd_intr = lambda n: None
 sys.modules["micropython"] = micropython
 
 # Import without executing run(): strip the trailing call.
-src = open("/home/claude/firmware.py").read()
+src = open(os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                        "firmware.py")).read()
 src = src.replace("\nrun()\n", "\n")
 fw = types.ModuleType("fw")
 exec(compile(src, "firmware.py", "exec"), fw.__dict__)
