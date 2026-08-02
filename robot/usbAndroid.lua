@@ -249,12 +249,17 @@ function usbAndroidFinishOpen(env, manager, dev)
   local port = {
     kind = "android", env = env,
     conn = jniGlobal(env, conn),
+    ifaceComm = jniGlobal(env, eps.comm),
+    ifaceData = jniGlobal(env, eps.data),
     epIn = jniGlobal(env, eps.epIn),
     epOut = jniGlobal(env, eps.epOut),
     commId = eps.commId,
     pending = "",
     claimM = jniMethod(env, connCls, "claimInterface",
       "(Landroid/hardware/usb/UsbInterface;Z)Z"),
+    releaseM = jniMethod(env, connCls, "releaseInterface",
+      "(Landroid/hardware/usb/UsbInterface;)Z"),
+    closeM = jniMethod(env, connCls, "close", "()V"),
     bulkM = jniMethod(env, connCls, "bulkTransfer",
       "(Landroid/hardware/usb/UsbEndpoint;[BII)I"),
     ctrlM = jniMethod(env, connCls, "controlTransfer",
@@ -263,15 +268,20 @@ function usbAndroidFinishOpen(env, manager, dev)
   -- Both interfaces: the data one carries the bulk endpoints,
   -- the control one is the target of the ACM setup requests.
   if not jniCallBool(env, port.conn, port.claimM,
-      eps.comm, true) then
+      port.ifaceComm, true) then
+    usbAndroidClose(port)
     return stageFail("claim", "control interface refused")
   end
   if not jniCallBool(env, port.conn, port.claimM,
-      eps.data, true) then
+      port.ifaceData, true) then
+    usbAndroidClose(port)
     return stageFail("claim", "data interface refused")
   end
   local okc, cerr = pcall(configureAcm, env, port)
-  if not okc then return stageFail("acm", cerr) end
+  if not okc then
+    usbAndroidClose(port)
+    return stageFail("acm", cerr)
+  end
   port.rxArr = jniGlobal(env, env[0].NewByteArray(env, 64))
   return port
 end
@@ -308,10 +318,26 @@ function usbAndroidCommand(port, line, timeout_s)
   return lineReaderRead(port, usbReadSlice, timeout_s)
 end
 
+--- Android keeps the interface claims and the connection
+--- alive until they are handed back explicitly; dropping the
+--- Lua port is not enough. A claim left behind survives for
+--- the life of the app process and makes the next open fail
+--- its ACM setup, so release both interfaces before letting
+--- go. Safe on a half-built port: open calls it when a stage
+--- fails, before rxArr exists.
 function usbAndroidClose(port)
+  if port.closed then return end
+  port.closed = true
   local env = port.env
+  jniCallBool(env, port.conn, port.releaseM, port.ifaceComm)
+  jniCallBool(env, port.conn, port.releaseM, port.ifaceData)
+  jniCallVoid(env, port.conn, port.closeM)
   env[0].DeleteGlobalRef(env, port.conn)
+  env[0].DeleteGlobalRef(env, port.ifaceComm)
+  env[0].DeleteGlobalRef(env, port.ifaceData)
   env[0].DeleteGlobalRef(env, port.epIn)
   env[0].DeleteGlobalRef(env, port.epOut)
-  env[0].DeleteGlobalRef(env, port.rxArr)
+  if port.rxArr then
+    env[0].DeleteGlobalRef(env, port.rxArr)
+  end
 end
