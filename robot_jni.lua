@@ -15,6 +15,11 @@
 
 local ffi = require("ffi")
 
+--- The FFI type namespace is process-wide while
+--- package.loaded is not: the IDE drops a project's modules
+--- after every run, so this file gets loaded again in the
+--- same process. Declare the types once.
+if not pcall(ffi.sizeof, "jvalue") then
 ffi.cdef([[
 typedef union jvalue {
   uint8_t z; int8_t b; uint16_t c; int16_t s;
@@ -78,6 +83,7 @@ typedef struct JNIFns** JEnv;
 void* SDL_AndroidGetJNIEnv(void);
 void* SDL_AndroidGetActivity(void);
 ]])
+end
 
 --- Every named entry must sit at its JNI spec index.
 --- Blind-coded padding is the #1 error source; this check
