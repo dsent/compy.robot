@@ -25,10 +25,18 @@ ROBOT_HINTS = {
   ["ERR i2c"] = "is the robot switched on?",
 }
 
-local robot_port = nil
+--- Remembered device path for the posix backend; nil lets
+--- the backend find the robot itself.
+local robot_dev = nil
 
 local function robotError(msg)
   error(msg, 0)
+end
+
+--- Lua stamps "file.lua:12:" in front of a raised message.
+--- Kids should never see that, so strip it.
+local function plainly(msg)
+  return (tostring(msg):gsub("^%S-%.lua:%d+:%s*", ""))
 end
 
 --- tonumber rather than a type check, so a value that reads
@@ -57,54 +65,71 @@ local function checkSeconds(value)
   return ms
 end
 
---- Raise a kid-readable error for a port that opened but does
---- not answer, naming a refused port setup when there was one
---- since that is the likely cause.
-local function handshakeFailed(port)
-  local why = port.acmRefused
-      and (" (port setup refused: " .. port.acmRefused .. ")")
+--- A refused ACM setup on the last port opened, phrased for
+--- the end of a message. Reported only when the robot then
+--- fails to answer, since a refusal on its own is harmless.
+local robot_refused = nil
+
+local function refusal()
+  return robot_refused
+      and (" (port setup refused: " .. robot_refused .. ")")
       or ""
+end
+
+--- Every command stands on its own: open, talk, close, even
+--- when the talking raises. Nothing is held between calls.
+---
+--- This is what makes a program safe to stop at any line. On
+--- Android an open connection owns its USB interface claims,
+--- and the claims belong to the app rather than to the Lua
+--- state: a program that ends on an error takes the port
+--- with it and the robot would stay locked until the next
+--- app start, out of reach of any cleanup we could write.
+--- Opening per command costs a few milliseconds against a
+--- movement measured in seconds, and it cannot leak.
+---
+--- Returns the reply, or nil plus the reason the port could
+--- not be opened or the reply never came.
+local function withPort(fn)
+  --- pcall: a device node that vanished mid-session makes
+  --- the posix backend raise rather than return.
+  local opened, port, err = pcall(transportOpen, robot_dev)
+  if not opened then return nil, plainly(port) end
+  if not port then return nil, err end
+  robot_refused = port.acmRefused
+  local ok, reply, cerr = pcall(fn, port)
   transportClose(port)
-  robotError("the robot is not answering, "
-    .. "check the cable and try again" .. why)
+  if not ok then robotError(reply) end
+  return reply, cerr
 end
 
---- Open the transport and verify our firmware answers.
---- dev is optional (tests, unusual device names).
+--- Check that the robot is there and answering. Optional:
+--- a move connects on its own. dev is optional too (tests,
+--- unusual device names) and is remembered for later moves.
 function robot_connect(dev)
-  local port, err = transportOpen(dev)
-  if not port then
-    robotError("robot not connected (" .. err .. ")")
+  robot_dev = dev
+  local pong, err = withPort(function(port)
+    return transportCommand(port, "PING", 2)
+  end)
+  if pong == "PONG" then return true end
+  if not pong and err then
+    robotError("robot not connected (" .. tostring(err) .. ")")
   end
-  if transportCommand(port, "PING", 2) ~= "PONG" then
-    handshakeFailed(port)
-  end
-  robot_port = port
-end
-
-local function dropPort()
-  if robot_port then
-    transportClose(robot_port)
-    robot_port = nil
-  end
-end
-
-local function ensureConnected()
-  if not robot_port then robot_connect() end
-  return robot_port
+  robotError("the robot is not answering, "
+    .. "check the cable and try again" .. refusal())
 end
 
 function robot_move(left, right, seconds)
   local l = checkSpeed(left, "left")
   local r = checkSpeed(right, "right")
   local ms = checkSeconds(seconds)
-  local port = ensureConnected()
   local line = "M " .. l .. " " .. r .. " " .. ms
   local wait = ms / 1000 + ROBOT_EXTRA_WAIT_S
-  local reply, err = transportCommand(port, line, wait)
+  local reply, err = withPort(function(port)
+    return transportCommand(port, line, wait)
+  end)
   if reply == "OK" then return true end
-  if reply == nil then dropPort() end
   local why = reply and (ROBOT_HINTS[reply] or reply)
-      or ("connection lost: " .. tostring(err))
+      or ("connection lost: " .. tostring(err) .. refusal())
   robotError("robot problem: " .. why)
 end
