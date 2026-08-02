@@ -10,10 +10,9 @@
 --- Errors are raised with error(msg, 0): short, readable
 --- messages without file positions, for children.
 ---
---- Integration: require this from the platform, then
---- expose robot_move (and optionally robot_connect) in the
---- user program environment
---- (ConsoleController.prepare_env).
+--- Loading the module defines robot_move and robot_connect
+--- as globals: a program requires it, and the console front
+--- end requires it for the prompt.
 
 require("robot.transport")
 
