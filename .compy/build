@@ -1,0 +1,72 @@
+#!/usr/bin/env bash
+#
+# .compy/build -- emit the shipped Compy projects from this
+# source repo (the .compy/build convention).
+#
+# Invoked by the host build as:
+#     cd <repo> && .compy/build <out-dir>
+# with an absolute, fresh <out-dir>. It populates
+#     <out-dir>/robot/   and   <out-dir>/robot_c/
+# each a valid Compy project (a direct main.lua), named
+# exactly as its manifest entry. Works relative to its own
+# location, is deterministic, and needs no network.
+#
+#   robot    the program a child edits and runs: main.lua
+#            drives the robot through robot_move.
+#   robot_c  the same runtime plus the console front end, for
+#            driving the robot from the prompt with m"...".
+#
+# This is the route that needs no Compy build: the projects are
+# copied onto a device like any other program. INTEGRATION.md
+# describes the other route, where the same modules ship inside
+# the application as built-ins.
+#
+# A Compy project is a flat folder, and its loader resolves a
+# module name straight to <name>.lua, so the dotted paths the
+# modules use in this repository cannot survive the copy:
+# robot/move.lua is emitted as robot_move.lua and its requires
+# are rewritten to match. The prefix stays, so a child's own
+# files cannot collide with the runtime.
+#
+# The firmware (Python, flashed to the micro:bit), the suites
+# and the docs stay out of both projects.
+#
+set -eu
+
+SRC="$(cd "$(dirname "$0")/.." && pwd)"
+OUT="${1:?usage: .compy/build <out-dir> (absolute, fresh)}"
+
+# Runtime modules -> both programs. move is the API a program
+# calls; everything else it pulls in.
+RUNTIME="move transport serial usbAndroid jni lineReader"
+
+# robot/<name>.lua -> <dir>/robot_<name>.lua, dotted requires
+# rewritten to the flat names.
+flatten() {
+  local dir=$1 name
+  shift
+  for name in "$@"; do
+    sed -e 's/require("robot\.\([A-Za-z]*\)")/require("robot_\1")/g' \
+      "$SRC/robot/$name.lua" > "$dir/robot_$name.lua"
+  done
+}
+
+emit_robot() {
+  local d="$OUT/robot"
+  mkdir -p "$d"
+  flatten "$d" $RUNTIME
+  sed -e 's/require("robot\.\([A-Za-z]*\)")/require("robot_\1")/g' \
+    "$SRC/robot/main.lua" > "$d/main.lua"
+}
+
+emit_robot_c() {
+  local d="$OUT/robot_c"
+  mkdir -p "$d"
+  flatten "$d" $RUNTIME console
+  sed -e 's/require("robot\.\([A-Za-z]*\)")/require("robot_\1")/g' \
+    "$SRC/robot/consoleMain.lua" > "$d/main.lua"
+}
+
+emit_robot
+emit_robot_c
+echo "emitted $OUT/robot $OUT/robot_c" >&2
