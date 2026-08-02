@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+#
+# .compy/build -- emit the shipped Compy projects from this
+# single source repo (the .compy/build convention).
+#
+# Invoked by the host build as:
+#     cd <repo> && .compy/build <out-dir>
+# with an absolute, fresh <out-dir>. It populates
+#     <out-dir>/robot/   and   <out-dir>/robot_c/
+# each a valid Compy project (a direct main.lua), named
+# exactly as its manifest entry. Works relative to its own
+# location, is deterministic, and needs no network.
+#
+#   robot    the program a child edits and runs: main.lua
+#            drives the robot through robot_move.
+#   robot_c  the same runtime plus the console front end, for
+#            driving the robot from the prompt with m"...".
+#
+# A Compy project is a flat, self-contained folder with no
+# runtime sharing, so the runtime is physically copied into
+# each. The firmware (Python, flashed to the micro:bit), the
+# test suites and the docs stay out of both.
+#
+set -eu
+
+SRC="$(cd "$(dirname "$0")/.." && pwd)"
+OUT="${1:?usage: .compy/build <out-dir> (absolute, fresh)}"
+
+# Runtime modules -> both programs. robot_move is the API a
+# program calls; everything else it pulls in.
+RUNTIME="robot_move robot_transport robot_serial
+         robot_usb_android robot_jni robot_line_reader"
+
+copy_lua() { for m in $2; do cp "$SRC/$m.lua" "$1/"; done; }
+
+emit_robot() {
+  local d="$OUT/robot"
+  mkdir -p "$d"
+  copy_lua "$d" "$RUNTIME"
+  cp "$SRC/main.lua" "$d/main.lua"
+}
+
+emit_robot_c() {
+  local d="$OUT/robot_c"
+  mkdir -p "$d"
+  copy_lua "$d" "$RUNTIME"
+  copy_lua "$d" "robot_console"
+  cp "$SRC/console_main.lua" "$d/main.lua"
+}
+
+emit_robot
+emit_robot_c
+echo "emitted $OUT/robot $OUT/robot_c" >&2
