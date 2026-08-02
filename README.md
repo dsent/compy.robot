@@ -1,7 +1,7 @@
 # Compy robot
 
 Driving an ElecFreaks TPBot from a Compy program, so that children
-can move a real robot by calling a built-in function.
+can move a real robot by calling one function.
 
 Two halves talk over a plain-text serial protocol: a firmware on
 the micro:bit that turns command lines into motor movement, and a
@@ -16,11 +16,12 @@ driven by hand from a terminal.
    smoke-test it from a terminal using the recipe at the end of
    PROTOCOL.md. This needs no Compy device and proves the firmware
    and the robot independently of everything else.
-2. Install the Compy side into a compy-dev checkout:
-   `tools/integrate.py ~/compy-dev` (see robot/INTEGRATION.md).
-3. Build a Compy APK containing it and run it on a device — see
-   robot/BUILDING.md. If you would rather not build, the Releases
-   page carries a prebuilt APK.
+2. Emit the two Compy projects with `.compy/build <out-dir>` and copy
+   them onto a device like any other program — no Compy build
+   involved. `robot` is the program a child edits; `robot_c` adds the
+   console front end.
+3. Open `robot_c` on the device and drive the robot from the prompt —
+   see RUNNING.md.
 
 ## Contents
 
@@ -30,17 +31,16 @@ driven by hand from a terminal.
 | `firmware.py` | MicroPython firmware for the micro:bit — reads command lines, drives the TPBot over I2C |
 | `test_firmware.py` | Protocol-logic tests for the firmware, with the micro:bit runtime stubbed |
 | `FLASHING.md` | Flashing the firmware and running the smoke test |
-| `tools/integrate.py` | Installs the modules into a compy-dev checkout and registers the built-in |
-| `robot/` | Compy-side Lua modules; they live in compy-dev as `src/robot/` |
-| `robot/INTEGRATION.md` | Layout, the two environments, blocking, the USB permission dialog, failure stages |
-| `robot/BUILDING.md` | What has to be in the build, verifying the package, running it on a device |
+| `robot/` | Compy-side Lua modules, and the `main.lua` each emitted project starts from |
+| `.compy/build` | Emits the `robot` and `robot_c` Compy projects from these modules |
+| `RUNNING.md` | Running the suites, a real robot from a shell, the two Compy projects, bring-up and failure stages |
 | `microbit-lua/` | Protocol handler for the Lua firmware in `nagydani/microbit-lua`, as a patch to `lua-script.lua` |
 
 ## Status
 
 Working on hardware end to end: a `robot_move` call on a Compy
 device drives a real TPBot — the call goes through the Lua
-built-in, LuaJIT FFI into JNI, the Android USB host API, a CDC-ACM
+module, LuaJIT FFI into JNI, the Android USB host API, a CDC-ACM
 serial link, the firmware, and I2C to the motors. Forward, turn in
 place, reverse and full speed all behave.
 

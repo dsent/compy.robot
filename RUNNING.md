@@ -5,10 +5,6 @@ the suites need nothing but LuaJIT, a development machine with the
 micro:bit plugged in runs the real thing from a shell, and a Compy runs
 it either as a Compy program or straight from the console prompt.
 
-Getting the modules into a Compy application as built-ins is a separate
-route with its own documents: `robot/INTEGRATION.md` for what gets
-registered where, `robot/BUILDING.md` for the device bring-up.
-
 ## The suites
 
 `run_tests.sh` runs everything from the repository root, so the dotted
@@ -65,6 +61,10 @@ that a child's own files cannot collide with the runtime.
     robot_move(-40, 40, 1)   -- spin one way
     robot_move(40, -40, 1)   -- and back again
 
+Speeds are percentages from -100 to 100, and a negative speed runs that
+wheel backwards, so opposite speeds turn the robot in place. Time is in
+seconds and may be fractional.
+
 The robot connects on the first move. `robot_connect()` exists to make
 the connection, and any error about it, happen at a predictable point.
 
@@ -84,8 +84,11 @@ raise, so nothing needs wrapping in `print()`.
 ## What to expect
 
 **The USB permission dialog.** The first connection after an install
-asks the child to allow access to the micro:bit. Android remembers the
-answer.
+asks the child to allow access, naming the device *BBC micro:bit
+CMSIS-DAP*. While the dialog is up `robot_connect` polls for the
+permission and continues once granted. The dialog's checkbox makes the
+answer permanent — worth ticking during testing. Without it this is one
+dialog per child per session.
 
 **Blocking moves.** `robot_move` returns when the wheels stop, so a
 four-second move freezes the screen for four seconds. Measured on the
@@ -96,6 +99,31 @@ an event pump if longer moves ever need one.
 **A few milliseconds per move.** Each command opens the port, talks, and
 closes it. Measured on the device: about 40 ms on top of the movement.
 That is what makes a program safe to stop at any line — see below.
+
+## Bringing up a device
+
+Seat the micro:bit in the TPBot, switch the chassis on, and plug it into
+the Compy. Then, from the console:
+
+    project"robot_c"
+    require"robot_console"
+    m"30 30 1"
+
+The robot drives forward for a second. Run a move from a program as
+well — that exercises the other environment, the one lessons use.
+
+## When something fails
+
+Errors from the Android path name the stage they failed at, for example
+`stage endpoints: CDC set incomplete`, which locates the problem without
+a debugger on the device. The stages, in order:
+
+`selfcheck`, `env`, `activity`, `manager`, `scan`, `permission`, `open`,
+`endpoints`, `claim`, `acm`.
+
+`stage scan: no micro:bit on the bus` with the cable plugged in usually
+means the device is not powered from the port — check that the Compy end
+really is a host port.
 
 ## Constraints worth knowing
 
@@ -118,9 +146,7 @@ by a running program lands in the program's environment; loaded from the
 prompt, it lands in the console's. Whoever loads first wins, so a
 session that first runs a robot program and then tries `m"..."` at the
 prompt gets `attempt to call a nil value`. Restart the IDE when
-switching between the two. Registering the built-ins in both
-environments — the route `robot/INTEGRATION.md` describes — removes the
-split.
+switching between the two.
 
 **The modules must be loadable more than once per process.** The IDE
 drops a project's modules after every run, so every file here is written

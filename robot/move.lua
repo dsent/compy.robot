@@ -1,4 +1,4 @@
---- robot_move(left, right, seconds): the built-in kids
+--- robot_move(left, right, seconds): the function kids
 --- call from a compy program to drive the TPBot.
 ---
 --- Blocking by design: it returns only after the movement

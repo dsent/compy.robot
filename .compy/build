@@ -16,10 +16,8 @@
 #   robot_c  the same runtime plus the console front end, for
 #            driving the robot from the prompt with m"...".
 #
-# This is the route that needs no Compy build: the projects are
-# copied onto a device like any other program. INTEGRATION.md
-# describes the other route, where the same modules ship inside
-# the application as built-ins.
+# The projects are copied onto a device like any other program,
+# so nothing here needs a Compy build.
 #
 # A Compy project is a flat folder, and its loader resolves a
 # module name straight to <name>.lua, so the dotted paths the

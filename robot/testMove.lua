@@ -1,4 +1,4 @@
---- End-to-end tests for the robot_move built-in against
+--- End-to-end tests for robot_move against
 --- the fake firmware pty (arg[1] = device). The harness
 --- kills the firmware when /tmp/kill_now appears.
 
