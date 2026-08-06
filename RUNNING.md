@@ -41,11 +41,13 @@ messages — except the Android backend, which needs a Compy.
 
 ## As Compy projects
 
-`.compy/build` emits two projects, which are copied onto a device like
+`.compy/build` emits three projects, which are copied onto a device like
 any other program — no Compy build involved:
 
 - `robot` — the runtime plus a `main.lua` a child edits and runs.
 - `robot_c` — the same runtime plus the console front end.
+- `robot_w` — the wheel bench, which puts the same three numbers on
+  two gauges and a clock.
 
 A Compy project is a flat folder whose loader resolves a module name
 straight to `<name>.lua`, so the build flattens `robot/move.lua` to
@@ -80,6 +82,31 @@ parentheses, so a move is three numbers in quotes:
 
 `m` reports `ok`, or the same kid-readable message a program would
 raise, so nothing needs wrapping in `print()`.
+
+### From the wheel bench
+
+`robot_w` puts the three numbers `m` takes on screen as two wheel
+gauges and a clock, for driving the robot in front of a room:
+
+    Q / A      left wheel
+    P / L      right wheel
+    UP / DOWN  seconds
+    ENTER      go
+
+The wheel gauges stop at the powers the robot answers to — `0`, then
+`40` to `100` each way. Below 40 percent the wheels do not turn at
+all, so the ladder skips those numbers rather than offering values
+that do nothing. The seconds move in quarters, up to 10. Holding a
+key walks a gauge.
+
+The console line for the move on the gauges is printed across the
+screen, so `robot_w` and `m"40 -40 1"` are visibly the same three
+numbers.
+
+Enter only arms the move; it goes out once the screen has drawn the
+command. Because `robot_move` blocks, that drawn frame is what stays
+on screen while the wheels turn — the room reads the command that is
+running. The answer, `ok` or the failure, replaces it afterwards.
 
 ## What to expect
 

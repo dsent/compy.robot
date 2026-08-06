@@ -16,10 +16,10 @@ driven by hand from a terminal.
    smoke-test it from a terminal using the recipe at the end of
    PROTOCOL.md. This needs no Compy device and proves the firmware
    and the robot independently of everything else.
-2. Emit the two Compy projects with `.compy/build <out-dir>` and copy
+2. Emit the three Compy projects with `.compy/build <out-dir>` and copy
    them onto a device like any other program — no Compy build
    involved. `robot` is the program a child edits; `robot_c` adds the
-   console front end.
+   console front end; `robot_w` is the wheel bench.
 3. Open `robot_c` on the device and drive the robot from the prompt —
    see RUNNING.md.
 
@@ -32,8 +32,8 @@ driven by hand from a terminal.
 | `test_firmware.py` | Protocol-logic tests for the firmware, with the micro:bit runtime stubbed |
 | `FLASHING.md` | Flashing the firmware and running the smoke test |
 | `robot/` | Compy-side Lua modules, and the `main.lua` each emitted project starts from |
-| `.compy/build` | Emits the `robot` and `robot_c` Compy projects from these modules |
-| `RUNNING.md` | Running the suites, a real robot from a shell, the two Compy projects, bring-up and failure stages |
+| `.compy/build` | Emits the `robot`, `robot_c` and `robot_w` Compy projects from these modules |
+| `RUNNING.md` | Running the suites, a real robot from a shell, the three Compy projects, bring-up and failure stages |
 | `microbit-lua/` | Protocol handler for the Lua firmware in `nagydani/microbit-lua`, as a patch to `lua-script.lua` |
 
 ## Status

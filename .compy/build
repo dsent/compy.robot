@@ -6,7 +6,8 @@
 # Invoked by the host build as:
 #     cd <repo> && .compy/build <out-dir>
 # with an absolute, fresh <out-dir>. It populates
-#     <out-dir>/robot/   and   <out-dir>/robot_c/
+#     <out-dir>/robot/, <out-dir>/robot_c/ and
+#     <out-dir>/robot_w/
 # each a valid Compy project (a direct main.lua), named
 # exactly as its manifest entry. Works relative to its own
 # location, is deterministic, and needs no network.
@@ -15,6 +16,9 @@
 #            drives the robot through robot_move.
 #   robot_c  the same runtime plus the console front end, for
 #            driving the robot from the prompt with m"...".
+#   robot_w  the wheel bench: the same three numbers as two
+#            gauges and a clock, driven from the keyboard,
+#            for showing a room what the numbers do.
 #
 # The projects are copied onto a device like any other program,
 # so nothing here needs a Compy build.
@@ -65,6 +69,15 @@ emit_robot_c() {
     "$SRC/robot/consoleMain.lua" > "$d/main.lua"
 }
 
+emit_robot_w() {
+  local d="$OUT/robot_w"
+  mkdir -p "$d"
+  flatten "$d" $RUNTIME wheels
+  sed -e 's/require("robot\.\([A-Za-z]*\)")/require("robot_\1")/g' \
+    "$SRC/robot/wheelsMain.lua" > "$d/main.lua"
+}
+
 emit_robot
 emit_robot_c
-echo "emitted $OUT/robot $OUT/robot_c" >&2
+emit_robot_w
+echo "emitted $OUT/robot $OUT/robot_c $OUT/robot_w" >&2
