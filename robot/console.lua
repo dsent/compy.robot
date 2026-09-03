@@ -2,7 +2,7 @@
 ---
 --- Lua calls a function with a single string without
 --- parentheses, so with this loaded a move is:
----     m"40 -40 1"
+---     m "40 -40 1"
 --- left wheel, right wheel, seconds -- the three numbers
 --- robot_move takes. The robot connects on its own and every
 --- move answers, so nothing needs wrapping in print().
@@ -15,7 +15,7 @@ require("robot.move")
 local NUM = "(-?%d+%.?%d*)"
 local MOVE = "^%s*" .. NUM .. "%s+" .. NUM .. "%s+" .. NUM
     .. "%s*$"
-local USAGE = 'say it like this: m"40 -40 1"'
+local USAGE = 'say it like this: m "40 -40 1"'
     .. ' -- left, right, seconds'
 
 function m(command)

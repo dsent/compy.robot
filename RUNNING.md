@@ -76,9 +76,9 @@ Open the console project, load the front end, and drive the robot a line
 at a time. Lua calls a function with a single string without
 parentheses, so a move is three numbers in quotes:
 
-    project"robot_c"
-    require"robot_console"
-    m"40 -40 1"
+    project "robot_c"
+    require "robot_console"
+    m "40 -40 1"
 
 `m` reports `ok`, or the same kid-readable message a program would
 raise, so nothing needs wrapping in `print()`.
@@ -100,7 +100,7 @@ that do nothing. The seconds move in quarters, up to 10. Holding a
 key walks a gauge.
 
 The console line for the move on the gauges is printed across the
-screen, so `robot_w` and `m"40 -40 1"` are visibly the same three
+screen, so `robot_w` and `m "40 -40 1"` are visibly the same three
 numbers.
 
 Enter only arms the move; it goes out once the screen has drawn the
@@ -132,9 +132,9 @@ That is what makes a program safe to stop at any line — see below.
 Seat the micro:bit in the TPBot, switch the chassis on, and plug it into
 the Compy. Then, from the console:
 
-    project"robot_c"
-    require"robot_console"
-    m"30 30 1"
+    project "robot_c"
+    require "robot_console"
+    m "30 30 1"
 
 The robot drives forward for a second. Run a move from a program as
 well — that exercises the other environment, the one lessons use.
@@ -171,7 +171,7 @@ either. The Android USB host API is the only route, which is what
 **A module's globals live where it was first loaded.** A module loaded
 by a running program lands in the program's environment; loaded from the
 prompt, it lands in the console's. Whoever loads first wins, so a
-session that first runs a robot program and then tries `m"..."` at the
+session that first runs a robot program and then tries `m "..."` at the
 prompt gets `attempt to call a nil value`. Restart the IDE when
 switching between the two.
 

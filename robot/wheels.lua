@@ -10,7 +10,7 @@
 --- offering numbers that do nothing.
 ---
 --- The console line for the same move is printed across
---- the screen, so the gauges and m"40 -40 1" are visibly
+--- the screen, so the gauges and m "40 -40 1" are visibly
 --- one thing.
 
 require("robot.move")
@@ -60,7 +60,7 @@ end
 
 --- The same move written the way the console takes it.
 function commandLine()
-  return "m\"" .. leftPower() .. " " .. rightPower()
+  return "m \"" .. leftPower() .. " " .. rightPower()
     .. " " .. BENCH.seconds .. "\""
 end
 

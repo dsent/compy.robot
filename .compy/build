@@ -15,7 +15,7 @@
 #   robot    the program a child edits and runs: main.lua
 #            drives the robot through robot_move.
 #   robot_c  the same runtime plus the console front end, for
-#            driving the robot from the prompt with m"...".
+#            driving the robot from the prompt with m "...".
 #   robot_w  the wheel bench: the same three numbers as two
 #            gauges and a clock, driven from the keyboard,
 #            for showing a room what the numbers do.
