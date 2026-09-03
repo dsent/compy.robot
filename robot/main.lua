@@ -11,5 +11,8 @@
 
 require("robot.move")
 
-robot_move(-40, 40, 1)  -- spin one way
-robot_move(40, -40, 1)  -- and back again
+-- spin one way
+robot_move(-40, 40, 1)
+
+-- and back again
+robot_move(40, -40, 1)
