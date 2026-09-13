@@ -35,6 +35,7 @@ driven by hand from a terminal.
 | `.compy/build` | Emits the `robot`, `robot_c` and `robot_w` Compy projects from these modules |
 | `RUNNING.md` | Running the suites, a real robot from a shell, the three Compy projects, bring-up and failure stages |
 | `microbit-lua/` | Protocol handler for the Lua firmware in `nagydani/microbit-lua`, as a patch to `lua-script.lua` |
+| `tpbot-edu-firmware/` | Prebuilt micro:bit firmware for the TPBot Edu, a Lua REPL with `robot_move` built in, and how to flash it |
 
 ## Status
 
