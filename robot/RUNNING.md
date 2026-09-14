@@ -7,19 +7,19 @@ it either as a Compy program or straight from the console prompt.
 
 ## The suites
 
-`run_tests.sh` runs everything from the repository root, so the dotted
-require paths resolve as they do inside a build. It starts
+`robot/run_tests.sh` runs everything from the repository root, so the
+dotted require paths resolve as they do inside a build. It starts
 `robot/fakeFirmware.py` on a pseudo-terminal, hands the device to each
 suite, and kills the firmware when a suite asks for it (the mid-session
 device-death case):
 
-    ./run_tests.sh
+    robot/run_tests.sh
 
 Individual suites, when a failure needs a closer look:
 
-    ./run_tests.sh robot/testSerial.lua
+    robot/run_tests.sh robot/testSerial.lua
     luajit robot/testLineReader.lua        # needs no firmware
-    uv run python test_firmware.py         # firmware protocol logic
+    uv run python robot/tpbot-old-firmware/test_firmware.py
 
 `test_firmware.py` mocks the `microbit` and `micropython` modules, so it
 covers everything in `firmware.py` except the real I2C bus and real UART
@@ -27,8 +27,9 @@ timing. Those need the device.
 
 ## A real robot from a development machine
 
-Flash `firmware.py` to the micro:bit (`FLASHING.md`), plug it into the
-machine, and the posix backend drives it from bare LuaJIT:
+Flash `tpbot-old-firmware/firmware.py` to the micro:bit
+(`tpbot-old-firmware/FLASHING.md`), plug it into the machine, and the
+posix backend drives it from bare LuaJIT:
 
     luajit robot/main.lua
 
@@ -41,8 +42,8 @@ messages — except the Android backend, which needs a Compy.
 
 ## As Compy projects
 
-`.compy/build` emits three projects, which are copied onto a device like
-any other program — no Compy build involved:
+`robot/.compy/build` emits three projects, which are copied onto a device
+like any other program — no Compy build involved:
 
 - `robot` — the runtime plus a `main.lua` a child edits and runs.
 - `robot_c` — the same runtime plus the console front end.

@@ -14,7 +14,7 @@ it puts MicroPython plus the script onto the micro:bit in one step.
 ## Alternative: uflash from the command line
 
     pip install uflash
-    uflash firmware.py
+    uflash robot/tpbot-old-firmware/firmware.py
 
 `uflash` finds the mounted MICROBIT drive and writes a combined
 MicroPython + script hex to it.

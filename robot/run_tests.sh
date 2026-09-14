@@ -14,7 +14,7 @@
 #
 set -uo pipefail
 
-cd "$(dirname "$0")"
+cd "$(dirname "$0")/.."
 
 PTY_SUITES=(robot/testSerial.lua robot/testTransport.lua
             robot/testMove.lua)
@@ -82,8 +82,8 @@ else
   for suite in robot/testLineReader.lua "${PTY_SUITES[@]}"; do
     run_suite "$suite" || failed=1
   done
-  echo "=== test_firmware.py ==="
-  uv run python test_firmware.py || failed=1
+  echo "=== robot/tpbot-old-firmware/test_firmware.py ==="
+  uv run python robot/tpbot-old-firmware/test_firmware.py || failed=1
 fi
 
 echo

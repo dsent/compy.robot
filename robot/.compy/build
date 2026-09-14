@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 #
 # .compy/build -- emit the shipped Compy projects from this
-# source repo (the .compy/build convention).
+# folder (the .compy/build convention).
 #
 # Invoked by the host build as:
-#     cd <repo> && .compy/build <out-dir>
+#     cd <this folder> && .compy/build <out-dir>
 # with an absolute, fresh <out-dir>. It populates
 #     <out-dir>/robot/, <out-dir>/robot_c/ and
 #     <out-dir>/robot_w/
@@ -31,25 +31,25 @@
 # files cannot collide with the runtime.
 #
 # The firmware (Python, flashed to the micro:bit), the suites
-# and the docs stay out of both projects.
+# and the docs stay out of all three projects.
 #
 set -eu
 
 SRC="$(cd "$(dirname "$0")/.." && pwd)"
 OUT="${1:?usage: .compy/build <out-dir> (absolute, fresh)}"
 
-# Runtime modules -> both programs. move is the API a program
-# calls; everything else it pulls in.
+# Runtime modules -> all three programs. move is the API a
+# program calls; everything else it pulls in.
 RUNTIME="move transport serial usbAndroid jni lineReader"
 
-# robot/<name>.lua -> <dir>/robot_<name>.lua, dotted requires
-# rewritten to the flat names.
+# <name>.lua in this folder -> <dir>/robot_<name>.lua, dotted
+# requires rewritten to the flat names.
 flatten() {
   local dir=$1 name
   shift
   for name in "$@"; do
     sed -e 's/require("robot\.\([A-Za-z]*\)")/require("robot_\1")/g' \
-      "$SRC/robot/$name.lua" > "$dir/robot_$name.lua"
+      "$SRC/$name.lua" > "$dir/robot_$name.lua"
   done
 }
 
@@ -58,7 +58,7 @@ emit_robot() {
   mkdir -p "$d"
   flatten "$d" $RUNTIME
   sed -e 's/require("robot\.\([A-Za-z]*\)")/require("robot_\1")/g' \
-    "$SRC/robot/main.lua" > "$d/main.lua"
+    "$SRC/main.lua" > "$d/main.lua"
 }
 
 emit_robot_c() {
@@ -66,7 +66,7 @@ emit_robot_c() {
   mkdir -p "$d"
   flatten "$d" $RUNTIME console
   sed -e 's/require("robot\.\([A-Za-z]*\)")/require("robot_\1")/g' \
-    "$SRC/robot/consoleMain.lua" > "$d/main.lua"
+    "$SRC/consoleMain.lua" > "$d/main.lua"
 }
 
 emit_robot_w() {
@@ -74,7 +74,7 @@ emit_robot_w() {
   mkdir -p "$d"
   flatten "$d" $RUNTIME wheels
   sed -e 's/require("robot\.\([A-Za-z]*\)")/require("robot_\1")/g' \
-    "$SRC/robot/wheelsMain.lua" > "$d/main.lua"
+    "$SRC/wheelsMain.lua" > "$d/main.lua"
 }
 
 emit_robot

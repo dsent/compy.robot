@@ -30,7 +30,7 @@ function write(s) out[#out+1] = s end
 function prompt() out[#out+1] = "> " end
 handler = { [1] = function() out[#out+1] = "REPL" end }
 
-local src = io.open("microbit-lua/protocolPatch.lua"):read("*a")
+local src = io.open("robot/tpbot-old-firmware/microbit-lua/protocolPatch.lua"):read("*a")
 -- the patch uses `local` at file scope; exec in this env
 local chunk = loadstring(src:gsub("^", ""))
 chunk()
