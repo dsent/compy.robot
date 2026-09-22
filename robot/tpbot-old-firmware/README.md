@@ -8,8 +8,10 @@ This whole approach, a line-protocol firmware on the micro:bit and a
 USB stack inside each Compy program, is being replaced by custom
 micro:bit firmwares and a serial API built into Compy. The TPBot Edu
 already runs on the new system, see
-[tpbot-edu-firmware](../../tpbot-edu-firmware/README.md); older TPBots
-follow later.
+[tpbot-edu-firmware](../../tpbot-edu-firmware/README.md). The TPBot
+Classic has a firmware on it too, see
+[tpbot-classic-firmware](../../tpbot-classic-firmware/README.md), but
+the `robot`, `robot_c` and `robot_w` programs still need this one.
 
 | Path | What it is |
 | --- | --- |
