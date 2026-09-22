@@ -5,13 +5,12 @@ plain-text command lines over USB serial and drives an ElecFreaks
 TPBot's motors.
 
 This whole approach, a line-protocol firmware on the micro:bit and a
-USB stack inside each Compy program, is being replaced by custom
-micro:bit firmwares and a serial API built into Compy. The TPBot Edu
-already runs on the new system, see
-[tpbot-edu-firmware](../../tpbot-edu-firmware/README.md). The TPBot
-Classic has a firmware on it too, see
-[tpbot-classic-firmware](../../tpbot-classic-firmware/README.md), but
-the `robot`, `robot_c` and `robot_w` programs still need this one.
+USB stack inside each Compy program, is superseded by custom micro:bit
+firmwares and the serial API built into Compy: see
+[tpbot-edu-firmware](../../tpbot-edu-firmware/README.md) and
+[tpbot-classic-firmware](../../tpbot-classic-firmware/README.md). The
+`robot`, `robot_c` and `robot_w` programs are the only ones that still
+need this firmware.
 
 | Path | What it is |
 | --- | --- |

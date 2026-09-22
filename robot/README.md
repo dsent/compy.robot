@@ -10,7 +10,7 @@ Lua transport on the Compy side that ships those lines and exposes
 between them, and it is deliberately text-based so it can be
 driven by hand from a terminal.
 
-This approach is being replaced; see
+This approach is superseded; see
 [tpbot-old-firmware](tpbot-old-firmware/README.md).
 
 ## Getting it running
