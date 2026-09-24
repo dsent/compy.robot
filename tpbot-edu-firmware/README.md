@@ -3,11 +3,14 @@
 `MICROBIT.hex` is the micro:bit firmware for driving an ElecFreaks TPBot
 Edu from a Compy. It turns the micro:bit into a Lua 5.1 REPL on its USB
 serial port, with the TPBot Edu library, `robot_move`, `turn` and
-`straight` built in, and a radio link to a second micro:bit.
+`straight` built in, and a radio link to a second micro:bit. Numbers
+are 32-bit floats: whole numbers are exact up to 16,777,216, and
+fractions keep about seven significant digits.
 
-It is a build of <https://github.com/nagydani/microbit-lua>, branch
-`TPBotEdu`, commit `84037a5` ("TPBot EDU additional functionality for
-Compy Club"). The Lua script embedded in the file is identical to
+It is `MICROBIT-edu.hex` from a build of
+<https://github.com/dsent/microbit-lua>, commit `3d81fd2`, which carries
+<https://github.com/nagydani/microbit-lua> `TPBotEdu-v2` (`b168247`).
+The Lua script embedded in the file is identical to
 `source/lua-script.lua` at that commit.
 
 ## Flashing

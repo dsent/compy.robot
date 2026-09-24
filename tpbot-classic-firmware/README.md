@@ -3,14 +3,15 @@
 `MICROBIT.hex` is the micro:bit firmware for driving the original
 ElecFreaks TPBot, the TPBot Classic, from a Compy. It turns the
 micro:bit into a Lua 5.1 REPL on its USB serial port, with the TPBot
-library and `robot_move` built in, and the same radio link as the
-[TPBot Edu firmware](../tpbot-edu-firmware/README.md#the-radio-link).
+library and `robot_move` built in, and the same radio link and numbers
+as the [TPBot Edu firmware](../tpbot-edu-firmware/README.md).
 `turn` and `straight` are TPBot Edu only.
 
-It is a build of <https://github.com/nagydani/microbit-lua>, branch
-`TPBotClassic`, commit `3488321` ("Backport to TPBot Classic"). The Lua
-script embedded in the file is identical to `source/lua-script.lua` at
-that commit.
+It is `MICROBIT-classic.hex` from the same build of
+<https://github.com/dsent/microbit-lua>, commit `3d81fd2`. The Lua
+script embedded in the file is identical to
+`source/lua-script-classic.lua` at that commit, the script of
+<https://github.com/nagydani/microbit-lua> `TPBotClassic` (`3488321`).
 
 Flashing and checking it go as for the TPBot Edu: see
 [Flashing](../tpbot-edu-firmware/README.md#flashing) and
