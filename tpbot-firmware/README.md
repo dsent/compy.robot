@@ -9,7 +9,7 @@ are 32-bit floats: whole numbers are exact up to 16,777,216, and
 fractions keep about seven significant digits.
 
 It is `MICROBIT.hex` from a build of
-<https://github.com/dsent/microbit-lua>, commit `204c577`, which carries
+<https://github.com/dsent/microbit-lua>, commit `3a1d465`, which carries
 <https://github.com/nagydani/microbit-lua> `TPBotEdu-v2` (`b168247`)
 with its TPBot library extended to both robots. The Lua script embedded
 in the file is identical to `source/lua-script.lua` at that commit.
