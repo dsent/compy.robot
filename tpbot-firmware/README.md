@@ -9,10 +9,12 @@ are 32-bit floats: whole numbers are exact up to 16,777,216, and
 fractions keep about seven significant digits.
 
 It is `MICROBIT.hex` from a build of
-<https://github.com/dsent/microbit-lua>, commit `c1e32cc`, which carries
+<https://github.com/dsent/microbit-lua>, commit `86c8e16`, which carries
 <https://github.com/nagydani/microbit-lua> `TPBotEdu-v2` (`b168247`)
-with its TPBot library extended to both robots. The Lua script embedded
-in the file is identical to `source/lua-script.lua` at that commit.
+with its TPBot library extended to both robots, and the radio handshake
+of <https://github.com/Vadim1987/microbit-lua> `fix/radio-handshake`
+(`eeaa6be`). The Lua script embedded in the file is identical to
+`source/lua-script.lua` at that commit.
 
 The `microbit` program on a Compy carries the same file, and its
 `upload()` puts it on the micro:bit.
@@ -80,3 +82,14 @@ Two micro:bits with this firmware can talk over the radio. On one,
 On the other, `connect(name, timeout)` makes the call and carries its
 USB serial console over the link: what you type there reaches the first
 one, and its answers come back.
+
+Each side names the other: `listen("relay")` answers only the board
+named `relay`, and `connect("pegas")` reaches only the board named
+`pegas`. A board's name is the five letters it scrolls when it starts;
+`print(microbit.friendlyName())` prints it. Both boards need this
+firmware: builds before `86c8e16` cannot link with it.
+
+A board that listens, or has connected, ignores its USB serial console
+until its reset button is pressed. Switch the robot on before
+unplugging the board that listens in it; unplugged from a robot that is
+off, it loses power and stops listening.
