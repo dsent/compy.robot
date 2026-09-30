@@ -4,7 +4,7 @@ Driving an ElecFreaks TPBot Edu robot from a Compy.
 
 | Path | What it is |
 | --- | --- |
-| `slalom/` | The `slalom` Compy project: `main.lua` sends the robot instructions in `r.lua` over serial |
+| `slalom/` | Sends `r.lua` to the micro:bit a line at a time, at its prompt |
 
 The board runs the Lua firmware that Compy IDE bundles; `robot_move` is
 built into it.
