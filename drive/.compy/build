@@ -1,0 +1,13 @@
+#!/bin/sh
+#
+# .compy/build: emit the drive project. drive replays its moves
+# with slalom's program, so slalom/main.lua goes in as
+# replay.lua: one file, shipped in both projects.
+#
+# Run by the build as: cd drive && .compy/build <out-dir>
+#
+set -eu
+out="$1/drive"
+mkdir -p "$out"
+cp main.lua r.lua README.md "$out/"
+cp ../slalom/main.lua "$out/replay.lua"

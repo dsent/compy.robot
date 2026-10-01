@@ -1,7 +1,7 @@
 # drive
 
 Drive a TPBot robot (Edu or Classic) with the Compy's keys. Every move goes
-into `r.lua`, so `slalom` can drive it again.
+into `r.lua`, and `replay.lua` drives it again.
 
 1. Put the robot firmware on the robot's micro:bit: in the `microbit`
    project, type `require("tools")`, then `upload()`.
@@ -22,13 +22,16 @@ While you hold keys, `drive` sends the micro:bit `robot_move(left, right,
 stops within half a second of letting go. Press `Ctrl+S` to stop `drive`: the
 moves are written into `r.lua`, the same speeds held on as one longer line.
 
-To drive the moves again in `slalom`, type at the console:
+To drive the moves again, type at the console:
 
 ```lua
-moves = readfile("r.lua")
-project("slalom")
-writefile("r.lua", moves)
+dofile("replay.lua")
 ```
+
+`replay.lua` is the `slalom` project's program, put into this project by
+the build: it sends `r.lua` to the micro:bit a line at a time, each when it
+shows its prompt. A run straight from a checkout of this repository has no
+`replay.lua`.
 
 If the robot does not move, plug the micro:bit in again, or stop `drive` and
 run it again.

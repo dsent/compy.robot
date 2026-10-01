@@ -2,8 +2,8 @@
 --
 -- While you hold keys, drive sends the micro:bit one line,
 -- robot_move(left, right, 0.5), each time it shows its
--- prompt. Every line goes into r.lua, so slalom can drive
--- it again.
+-- prompt. Every line goes into r.lua; stop drive, then
+-- dofile("replay.lua") drives it again.
 
 -- Left hand, left wheel; right hand, right wheel. Up is
 -- forward, and the outer keys are fast.
