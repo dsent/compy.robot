@@ -1,0 +1,17 @@
+#!/bin/sh
+#
+# .compy/build: emit the Compy projects in this repository,
+# slalom and drive. drive replays its moves with slalom's
+# program, so slalom/main.lua also goes into drive as
+# replay.lua: one file, shipped in both projects.
+#
+# Each project's files are named here: a file added to
+# slalom/ or drive/ ships once it is added below too.
+#
+# Run by the build as: cd <repository> && .compy/build <out-dir>
+#
+set -eu
+mkdir -p "$1/slalom" "$1/drive"
+cp slalom/main.lua slalom/r.lua "$1/slalom/"
+cp drive/main.lua drive/r.lua drive/README.md "$1/drive/"
+cp slalom/main.lua "$1/drive/replay.lua"
