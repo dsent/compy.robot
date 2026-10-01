@@ -20,7 +20,8 @@ into `r.lua`, and `replay.lua` drives it again.
 While you hold keys, `drive` sends the micro:bit `robot_move(left, right,
 0.5)` each time it is ready for a line, and the screen shows it. The robot
 stops within half a second of letting go. Press `Ctrl+S` to stop `drive`: the
-moves are written into `r.lua`, the same speeds held on as one longer line.
+moves of this run are written into `r.lua` in place of what it held, the
+same speeds held on as one longer line.
 
 To drive the moves again, type at the console:
 

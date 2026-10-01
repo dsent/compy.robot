@@ -36,7 +36,7 @@ tapped = {
   left = 0,
   right = 0
 }
--- When a key went down, the robot standing still
+-- When a wheel key first went down since the last line
 pressed_at = nil
 -- The micro:bit shows its prompt and waits for a line
 ready = false
@@ -44,16 +44,16 @@ ready = false
 heard = ""
 clock = 0
 
--- The lines in r.lua, and the last one this run wrote
+-- The lines this run drove, for r.lua, and the last of them
 route = { }
-for line in (readfile("r.lua") or ""):gmatch("[^\r\n]+") do
-  table.insert(route, line)
-end
 last = nil
 
-function love.keypressed(key, scancode)
-  press("left", LEFT[scancode])
-  press("right", RIGHT[scancode])
+-- A held key repeats; only its first press counts
+function love.keypressed(key, scancode, isrepeat)
+  if not isrepeat then
+    press("left", LEFT[scancode])
+    press("right", RIGHT[scancode])
+  end
   return true
 end
 
