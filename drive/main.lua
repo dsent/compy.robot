@@ -21,8 +21,9 @@ RIGHT = {
 }
 -- How long one line drives, in seconds
 STEP = 0.5
--- Two keys pressed together go down a few frames apart:
--- wait this long for the second, so the robot goes straight
+-- Two keys pressed together go down a few frames apart: with
+-- the robot standing, wait this long for the second, so it
+-- goes straight. A line sent at the prompt does not wait.
 TOGETHER = 0.07
 
 -- The speed each wheel's key asks for while it is held

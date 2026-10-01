@@ -19,9 +19,10 @@ into `r.lua`, and `replay.lua` drives it again.
 
 While you hold keys, `drive` sends the micro:bit `robot_move(left, right,
 0.5)` each time it is ready for a line, and the screen shows it. The robot
-stops within half a second of letting go. Press `Ctrl+S` to stop `drive`: the
-moves of this run are written into `r.lua` in place of what it held, the
-same speeds held on as one longer line.
+stops within half a second of letting go. A key tapped while the robot moves
+drives its own half second after the move under way. Press `Ctrl+S` to stop
+`drive`: the moves of this run are written into `r.lua` in place of what it
+held, the same speeds held on as one longer line.
 
 To drive the moves again, type at the console:
 
@@ -34,5 +35,6 @@ the build: it sends `r.lua` to the micro:bit a line at a time, each when it
 shows its prompt. A run straight from a checkout of this repository has no
 `replay.lua`.
 
-If the robot does not move, plug the micro:bit in again, or stop `drive` and
-run it again.
+If the robot does not move, stop `drive`, switch the robot on, and run
+`drive` again. A new run also starts `r.lua` afresh, without the moves the
+robot did not make.
