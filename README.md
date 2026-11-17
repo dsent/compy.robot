@@ -6,5 +6,5 @@ Driving an ElecFreaks TPBot Edu robot from a Compy.
 | --- | --- |
 | `slalom/` | Sends `r.lua` to the micro:bit a line at a time, at its prompt |
 
-The board runs the Lua firmware that Compy IDE bundles; `robot_move` is
-built into it.
+The board runs `tpbot.lua` from Compy IDE's `microbit` project, the Lua
+firmware Compy IDE bundles with the robot words; `bot.move` is one of them.
